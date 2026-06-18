@@ -17,6 +17,13 @@ object FormPesquisa: TFormPesquisa
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
+  object Label1: TLabel
+    Left = 8
+    Top = 27
+    Width = 100
+    Height = 13
+    Caption = 'Selecione um campo:'
+  end
   object Panel1: TPanel
     Left = 0
     Top = 295
@@ -26,9 +33,6 @@ object FormPesquisa: TFormPesquisa
     Caption = 'Panel1'
     ShowCaption = False
     TabOrder = 0
-    ExplicitLeft = 120
-    ExplicitTop = 376
-    ExplicitWidth = 185
     object btnAction: TButton
       Left = 267
       Top = 8
@@ -62,7 +66,7 @@ object FormPesquisa: TFormPesquisa
   end
   object cmbCampos: TComboBox
     Left = 8
-    Top = 24
+    Top = 43
     Width = 145
     Height = 21
     Style = csDropDownList
@@ -71,7 +75,7 @@ object FormPesquisa: TFormPesquisa
   end
   object PFilter: TPanel
     Left = 8
-    Top = 51
+    Top = 70
     Width = 417
     Height = 54
     Caption = 'PFilter'

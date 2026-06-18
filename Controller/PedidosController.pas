@@ -40,6 +40,8 @@ type
 
     procedure Notificar;
 
+    procedure LimparLocal;
+
     constructor Create;
     destructor Destroy; override;
 
@@ -76,7 +78,8 @@ begin
       SQL.Add('UPDATE PEDIDOS');
       SQL.Add('SET VALOR = :Pvalor');
       SQL.Add('WHERE ID = :PidPedido');
-      ParamByName('Pvalor').AsInteger := Round(StrToFloat(ReplaceStr(AValor, '.', '')) * 100);
+      ParamByName('Pvalor').AsInteger :=
+        Round(StrToFloat(ReplaceStr(AValor, '.', '')) * 100);
       ParamByName('PidPedido').AsInteger := StrToInt(AId);
       ExecSQL;
     end;
@@ -97,7 +100,6 @@ begin
       end;
 
     end;
-
 
     ListaItems.Clear;
 
@@ -182,8 +184,11 @@ begin
   if InstanciaControl = Self then
     InstanciaControl := nil;
 
-  ListaObserver.Free;
-  ListaItems.Free;
+  if Assigned(ListaObserver) then
+    FreeAndNil(ListaObserver);
+
+  if Assigned(ListaItems) then
+    FreeAndNil(ListaItems);
 
   inherited Destroy;
 end;
@@ -248,7 +253,8 @@ begin
       SQL.Add('INSERT INTO PEDIDOS (ID, VALOR, ID_USUARIO)');
       SQL.Add('VALUES (:Pid, :Pvalor, :PIdUser)');
       ParamByName('Pid').AsInteger := StrToInt(AId);
-      ParamByName('Pvalor').AsInteger := Round(StrToFloat(ReplaceStr(AValor, '.', '')) * 100);
+      ParamByName('Pvalor').AsInteger :=
+        Round(StrToFloat(ReplaceStr(AValor, '.', '')) * 100);
       ParamByName('PIdUser').AsString := AIdUser;
       ExecSQL;
     end;
@@ -293,11 +299,8 @@ begin
       Close;
       FieldDefs.Clear;
 
-      FieldDefs.Add('ID_PEDIDO', ftInteger);
-      FieldDefs.Add('ID_ITEM', ftInteger);
       FieldDefs.Add('SEQUENCIAL', ftInteger);
       FieldDefs.Add('NOME', ftString, 29);
-      FieldDefs.Add('QUANTIDADE', ftInteger);
       FieldDefs.Add('VALOR', ftInteger);
 
       CreateDataSet;
@@ -308,12 +311,11 @@ begin
     Append;
 
     try
-      FieldByName('ID_PEDIDO').AsInteger := StrToInt(Item.IdPedido);
-      FieldByName('ID_ITEM').AsInteger := StrToInt(Item.IdItem);
+
       FieldByName('SEQUENCIAL').AsInteger := StrToInt(Item.Sequencial);
       FieldByName('NOME').AsString := Item.Nome;
-      FieldByName('QUANTIDADE').AsInteger := StrToInt(Item.Quantidade);
-      FieldByName('VALOR').AsInteger := Round(StrToFloat(ReplaceStr(Item.Valor, '.', '')) * 100);
+      FieldByName('VALOR').AsInteger :=
+        StrToInt(ReplaceStr(ReplaceStr(Item.Valor, '.', ''), ',', ''));
 
       FieldByName('VALOR').OnGetText := DataControl.FormatarValorGetText;
 
@@ -340,7 +342,23 @@ begin
   end;
 end;
 
+procedure TPedidosController.LimparLocal;
+begin
+  with DataControl.PedidosItemLocal do
+  begin
+    Close;
+    FieldDefs.Clear;
+    FieldDefs.Add('SEQUENCIAL', ftInteger);
+    FieldDefs.Add('NOME', ftString, 29);
+    FieldDefs.Add('VALOR', ftInteger);
+    CreateDataSet;
+  end;
+  ListaItems.Clear;
+end;
+
 procedure TPedidosController.PushRel(AIdPedido: string);
+var
+  Item: TItemPedidos;
 begin
   try
 
@@ -362,8 +380,33 @@ begin
 
       PedidosItems.Enabled := true;
 
+      with PedidosItemLocal do
+      begin
+        Close;
+        FieldDefs.Clear;
+        FieldDefs.Add('SEQUENCIAL', ftInteger);
+        FieldDefs.Add('NOME', ftString, 29);
+        FieldDefs.Add('VALOR', ftInteger);
+        CreateDataSet;
+      end;
+
       { Local e Simple do banco iguais }
-      PedidosItemLocal.Data := PedidosItemSDataSet.Data;
+      PedidosItemSDataSet.First;
+      while not PedidosItemSDataSet.Eof do
+      begin
+        with PedidosItemSDataSet do
+        begin
+          PedidosItemLocal.Append;
+          PedidosItemLocal.FieldByName('SEQUENCIAL').AsInteger :=
+            FieldByName('SEQUENCIAL').AsInteger;
+          PedidosItemLocal.FieldByName('NOME').AsString :=
+            FieldByName('NOME').AsString;
+          PedidosItemLocal.FieldByName('VALOR').AsInteger :=
+            FieldByName('VALOR').AsInteger;
+          PedidosItemLocal.Post;
+          Next;
+        end;
+      end;
 
       PedidosItemLocal.FieldByName('VALOR').OnGetText := FormatarValorGetText;
 
@@ -387,7 +430,7 @@ var
 begin
   for i := 0 to Pred(ListaItems.Count) do
   begin
-    if (ListaItems[i].IdItem = Aid) and (ListaItems[i].Sequencial = ASeq) then
+    if (ListaItems[i].IdItem = AId) and (ListaItems[i].Sequencial = ASeq) then
     begin
       ListaItems.Delete(i);
     end;

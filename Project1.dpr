@@ -26,7 +26,9 @@ uses
   PSelect in 'Frames\PSelect.pas',
   cFormFilter in 'Componente\Forms\cFormFilter.pas' {FormFIlter},
   uTFPBase in 'Interfaces\uTFPBase.pas',
-  FrameCount in 'Frames\FrameCount.pas';
+  FrameCount in 'Frames\FrameCount.pas',
+  cFormPesquisa in 'Componente\Forms\cFormPesquisa.pas' {FormPesquisa},
+  PTable in 'Frames\PTable.pas' {FPTable: TFrame};
 
 {$R *.res}
 
@@ -41,5 +43,6 @@ begin
   Application.CreateForm(TFormPedidos, FormPedidos);
   Application.CreateForm(TFormItensPedidos, FormItensPedidos);
   Application.CreateForm(TFormFIlter, FormFIlter);
+  Application.CreateForm(TFormPesquisa, FormPesquisa);
   Application.Run;
 end.

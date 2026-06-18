@@ -115,12 +115,9 @@ begin
         Close;
         FieldDefs.Clear;
 
-        FieldDefs.Add('ID_PEDIDO', ftInteger);
-        FieldDefs.Add('ID_ITEM', ftInteger);
         FieldDefs.Add('SEQUENCIAL', ftInteger);
         FieldDefs.Add('NOME', ftString, 29);
-        FieldDefs.Add('QUANTIDADE', ftInteger);
-        FieldDefs.Add('VALOR', ftString, 25);
+        FieldDefs.Add('VALOR', ftInteger);
 
         CreateDataSet;
       end;

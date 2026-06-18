@@ -25,6 +25,7 @@ type
     function getTypeInput(ACampo: string): TTypeInputs;
     function getOptions(ACampo: string): TStringList;
     function getCampos(ALocal: string): TDictionary<string, TTypeFilters>;
+    function getTabelaCurrent: String;
 
     procedure FormShow(Action, NameForm: string);
 
@@ -167,7 +168,7 @@ var
   filtroControl: string;
 begin
 
-  if TabelaCurrent = 'usuarios' then
+  if LowerCase(TabelaCurrent) = 'usuarios' then
   begin
 
     with DataControl.UserSDataSet do
@@ -181,7 +182,7 @@ begin
 
   end;
 
-  if TabelaCurrent = 'itens' then
+  if LowerCase(TabelaCurrent) = 'itens' then
   begin
 
     with DataControl.ItemSDataSet do
@@ -193,7 +194,7 @@ begin
 
   end;
 
-  if TabelaCurrent = 'pedidos' then
+  if LowerCase(TabelaCurrent) = 'pedidos' then
   begin
     filtroControl := TRegEx.Replace(AFiltro, 'DATA', 'DATETIME');
     filtroControl := TRegEx.Replace(filtroControl, 'QUANTIDADE',
@@ -364,6 +365,11 @@ begin
     Result.Add('05 - Separado(a)');
   end;
 
+end;
+
+function TController.getTabelaCurrent: String;
+begin
+  Result := TabelaCurrent;
 end;
 
 function TController.getTypeInput(ACampo: string): TTypeInputs;

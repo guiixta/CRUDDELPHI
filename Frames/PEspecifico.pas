@@ -48,7 +48,6 @@ begin
   if valor.IsEmpty then
     raise Exception.Create('Valor não pode ser nulo');
 
-
   Result := Format('WHERE %s LIKE %s', [SCampo, QuotedStr('%' + valor + '%')]);;
 
 end;
@@ -71,6 +70,11 @@ begin
       begin
         FEditGenerate := TEditGeneric.Create(self);
         TEditGeneric(FEditGenerate).TipoKey := tcNumeros;
+      end;
+    tiDinheiro:
+      begin
+        FEditGenerate := TEditMaskGeneric.Create(self);
+        TEditMaskGeneric(FEditGenerate).SetTipoMascara(tmDinheiro);
       end;
     tiCpf:
       begin
@@ -114,9 +118,7 @@ begin
   else if FEditGenerate is TEditMaskGeneric then
     TEditMaskGeneric(FEditGenerate).OnExit := AEvent
   else
-    EditCNPJ(FeditGenerate).OnExit := AEvent;
-
-
+    EditCNPJ(FEditGenerate).OnExit := AEvent;
 
 end;
 

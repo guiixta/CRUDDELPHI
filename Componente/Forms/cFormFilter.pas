@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, uInterfaces,
-  Controller, System.Generics.Collections, uTFPBase;
+  Controller, System.Generics.Collections, uTFPBase, System.RegularExpressions;
 
 type
   TFormFIlter = class(TForm)
@@ -32,6 +32,7 @@ type
     Controller: TController;
     Frame: TWinControl;
     OptionsSelect: TStringList;
+    TypeInput: TTypeInputs;
 
     procedure LimparPanel;
   public
@@ -68,7 +69,12 @@ begin
 
   filtroFrame := (Frame as TFPBase).getConsulta;
 
+  if TypeInput = tiDinheiro then
+    filtroFrame := TregEx.Replace(filtroFrame, '[^a-zA-Z0-9 ]', '');
+
   filtroFinal := Format('%s %s', [filtroFrame, filtroCombo]);
+
+
 
   Controller.Filtrar(cmbCampos.Items[cmbCampos.ItemIndex], filtroFinal);
 
@@ -97,6 +103,7 @@ begin
     (Integer(cmbCampos.Items.Objects[cmbCampos.ItemIndex]));
 
   TipoInput := Controller.getTypeInput(LCampo);
+  TypeInput := TipoInput;
   if Assigned(OptionsSelect) then
   begin
     OptionsSelect.Free;

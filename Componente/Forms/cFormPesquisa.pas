@@ -20,6 +20,7 @@ type
     btnClose: TButton;
     cmbCampos: TComboBox;
     PFilter: TPanel;
+    Label1: TLabel;
     procedure cmbCamposChange(Sender: TObject);
     procedure btnActionClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
@@ -79,6 +80,7 @@ var
   LCampo: string;
   TipoFilter: TTypeFilters;
   TipoInput: TTypeInputs;
+  OldTable: string;
 begin
   if cmbCampos.ItemIndex = -1 then
     exit;
@@ -87,10 +89,12 @@ begin
   TipoFilter := TTypeFilters
     (Integer(cmbCampos.Items.Objects[cmbCampos.ItemIndex]));
 
+  OldTable := Controller.getTabelaCurrent;
   Controller.ChangeTableCurrent(Busca);
 
   TipoInput := Controller.getTypeInput(LCampo);
 
+  Controller.ChangeTableCurrent(OldTable);
 
   LimparPanel;
   case TipoFilter of
@@ -195,7 +199,7 @@ var
   campo: string;
 begin
   Busca := ALocal;
-  Self.Caption := ALocal + ' - Pesquisa';
+  Self.Caption := Alocal[1] + LowerCase(Copy(ALocal, 2, MaxInt)) + ' - Pesquisa';
 
   DataControl := DM.Data;
   GridPesquisa.DataSource := DataControl.PesquisaSource;

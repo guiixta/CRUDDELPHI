@@ -9,7 +9,7 @@ uses
   Vcl.DBGrids,
   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons, cEditGeneric, cEditMaskGeneric,
   Vcl.Mask, SimpleDS, PedidosController, cDGridGeneric, uInterfaces,
-  System.UITypes;
+  System.UITypes, System.StrUtils;
 
 type
   TEdit = class(TEditGeneric);
@@ -82,6 +82,7 @@ uses
 procedure TFormPedidos.Atualizar;
 var
   valorTotal: integer;
+  sValor: string;
 begin
   valorTotal := 0;
   if (ItensPedidosForm <> nil) and (ItensPedidosForm.DataSet <> nil) and
@@ -94,9 +95,8 @@ begin
     ItensPedidosForm.DataSet.First;
     while not ItensPedidosForm.DataSet.Eof do
     begin
-      valorTotal := valorTotal +
-        Trunc(ItensPedidosForm.DataSet.FieldByName('VALOR').AsFloat);
-
+      sValor := ItensPedidosForm.DataSet.FieldByName('VALOR').AsString;
+      valorTotal := valorTotal + StrToIntDef(sValor, 0);
       ItensPedidosForm.DataSet.Next;
     end;
     ItensPedidosForm.DataSet.First;
@@ -283,13 +283,6 @@ begin
 
   FormItensPedidos.MostrarForm(proxSeq, EId.Text);
 
-  with GridItensPedidos do
-  begin
-    Columns[0].Visible := false;
-    Columns[1].Visible := false;
-    Columns[4].Visible := false;
-  end;
-
 end;
 
 constructor TFormPedidos.Create(AOwner: TComponent);
@@ -330,13 +323,6 @@ begin
     ENomeUser.Text := DadosForm.DataSet.FieldByName('NOME').AsString;
 
     PController.PushRel(EId.Text);
-
-    with GridItensPedidos do
-    begin
-      Columns[0].Visible := false;
-      Columns[1].Visible := false;
-      Columns[4].Visible := false;
-    end;
 
     EId.Enabled := false;
   end;
@@ -401,17 +387,19 @@ begin
   FAction := Action;
   DadosForm := Dados;
   ItensPedidosForm := ItemPedidos;
+  executando := false;
 
   GridItensPedidos.DataSource := ItensPedidosForm;
 
   IndirectForm := PController.getUser('1');
-
-  Self.Caption := FAction + Self.Caption;
+  Self.Caption := FAction + ' - Pedidos';
   btnAction.Caption := '&' + FAction;
 
   if FAction = 'Incluir' then
   begin
     EId.Enabled := false;
+
+    btnAction.Caption := FAction[1] + '&' + Copy(FAction, 2, MaxInt);
 
     DadosForm.DataSet.Last;
     EId.Text := IntToStr(DadosForm.DataSet.FieldByName('ID').AsInteger + 1);
@@ -430,7 +418,7 @@ begin
     Self.ActiveControl := EId;
 
     EUser.Enabled := false;
-    btnPesquisa.Enabled := False;
+    btnPesquisa.Enabled := false;
 
   end;
 
@@ -444,6 +432,8 @@ begin
 
     EUser.Enabled := false;
   end;
+
+  PController.LimparLocal;
 
   Self.ShowModal;
 
