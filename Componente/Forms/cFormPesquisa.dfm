@@ -63,6 +63,7 @@ object FormPesquisa: TFormPesquisa
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
+    OnDblClick = GridPesquisaDblClick
   end
   object cmbCampos: TComboBox
     Left = 8

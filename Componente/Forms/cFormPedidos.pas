@@ -62,6 +62,7 @@ type
     { Public declarations }
 
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure MostrarForm(Action: string; Dados: TDataSource;
       ItemPedidos: TDataSource);
 
@@ -143,6 +144,10 @@ begin
       if EUser.CanFocus then
         EUser.SetFocus;
     end;
+
+    if not ItensPedidosForm.DataSet.Active then
+      raise Exception.Create('Pedido não pode ficar sem itens!');
+    
 
     if not ItensPedidosForm.DataSet.RecordCount > 0 then
       raise Exception.Create('Precisa de itens para cadastra pedido!');
@@ -302,6 +307,12 @@ begin
   EData.Text := PController.getData;
   EHora.Text := PController.getHora;
 
+end;
+
+destructor TFormPedidos.Destroy;
+begin
+  PController.RemObserver(Self);
+  inherited Destroy;
 end;
 
 procedure TFormPedidos.EIdExit(Sender: TObject);

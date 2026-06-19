@@ -83,7 +83,7 @@ begin
       [Label1.Caption, QuotedStr(Data1), QuotedStr(Data2)]);
   end
   else
-    Result := Format('WHERE %s = %s', [Label1.Caption, QuotedStr(Data1)]);
+    Result := Format('WHERE CAST(%s AS DATE) = %s', [Label1.Caption, QuotedStr(Data1)]);
 end;
 
 procedure TFPRange.Iniciar(ACampo: string);

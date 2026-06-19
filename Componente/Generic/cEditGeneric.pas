@@ -118,6 +118,9 @@ var
   control: string;
   ParentForm: TCustomForm;
 begin
+
+
+
   ParentForm := GetParentForm(Self);
 
   { Caso estiver fechando o modal }

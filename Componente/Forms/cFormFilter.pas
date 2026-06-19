@@ -70,7 +70,7 @@ begin
   filtroFrame := (Frame as TFPBase).getConsulta;
 
   if TypeInput = tiDinheiro then
-    filtroFrame := TregEx.Replace(filtroFrame, '[^a-zA-Z0-9 ]', '');
+    filtroFrame := TregEx.Replace(filtroFrame, '[^a-zA-Z0-9 ><=%'']', '');
 
   filtroFinal := Format('%s %s', [filtroFrame, filtroCombo]);
 
@@ -177,8 +177,11 @@ end;
 procedure TFormFIlter.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   if Assigned(OptionsSelect) then
-    OptionsSelect.Free;
-  Frame.Free;
+    FreeAndNil(OptionsSelect);
+
+  if Assigned(Frame) then
+    FreeAndNil(Frame);
+
 end;
 
 procedure TFormFIlter.LimparPanel;
@@ -189,6 +192,7 @@ begin
   begin
     PFilter.Controls[I].Free;
   end;
+
 
 end;
 

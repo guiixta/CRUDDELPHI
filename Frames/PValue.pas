@@ -57,7 +57,7 @@ begin
     operador := '=';
 
   if Tipo = tiDinheiro then
-    value := IntToStr(Round(StrToFloat(ReplaceStr(value, '.', '')) * 100));
+    value := IntToStr(Round(StrToFloat(ReplaceStr(ReplaceStr(value, '.', ''), ',', ''))));
 
   Result := Format('WHERE %s %s %s', [Label1.Caption, operador, value]);
 

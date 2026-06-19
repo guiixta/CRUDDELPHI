@@ -100,15 +100,6 @@ begin
       DataSource.DataSet.FieldByName('VALOR').OnGetText :=
         DataControl.FormatarValorGetText;
     end;
-  end
-  else
-  begin
-    with AGrid do
-    begin
-      Columns[0].Visible := false;
-      Columns[1].Visible := false;
-      Columns[4].Visible := false;
-    end;
   end;
 
 end;
@@ -502,6 +493,12 @@ begin
       [AValor, ACampo]);
   end;
 
+  if LowerCase(ALocal) = 'itens' then
+  begin
+    pesquisa := Format('SELECT * FROM ITENS %s ORDER BY %s ASC',
+      [AValor, ACampo]);
+  end;
+
   if pesquisa <> '' then
   begin
     with DataControl do
@@ -510,6 +507,9 @@ begin
       IndirectConsult.DataSet.CommandText := pesquisa;
       PesquisaSource.DataSet := IndirectConsult;
       IndirectConsult.Open;
+
+      if Assigned(IndirectConsult.FindField('VALOR')) then
+        IndirectConsult.FieldByName('VALOR').OnGetText := FormatarValorGetText;
     end;
   end;
 

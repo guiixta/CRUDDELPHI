@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ExtCtrls,
+  Vcl.Imaging.pngimage;
 
 type
   TMainPainel = class(TForm)
@@ -14,6 +15,7 @@ type
     Usuarios1: TMenuItem;
     Items1: TMenuItem;
     Pedidos1: TMenuItem;
+    Image1: TImage;
     procedure Usuarios1Click(Sender: TObject);
     procedure Items1Click(Sender: TObject);
     procedure Pedidos1Click(Sender: TObject);
@@ -32,8 +34,6 @@ implementation
 
 uses
   cPainelGeneric;
-
-
 
 procedure TMainPainel.Items1Click(Sender: TObject);
 var

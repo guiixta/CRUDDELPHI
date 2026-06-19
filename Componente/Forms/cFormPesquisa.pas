@@ -25,6 +25,7 @@ type
     procedure btnActionClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure GridPesquisaDblClick(Sender: TObject);
   private
     { Private declarations }
   var
@@ -180,6 +181,14 @@ begin
     FreeAndNil(OptionsSelect);
 
     FreeAndNil(Frame);
+end;
+
+procedure TFormPesquisa.GridPesquisaDblClick(Sender: TObject);
+begin
+  if not GridPesquisa.DataSource.DataSet.RecordCount > 0 then
+    raise Exception.Create('Nada selecionado!');
+
+  btnAction.Click;
 end;
 
 procedure TFormPesquisa.LimparPanel;

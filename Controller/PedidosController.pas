@@ -185,7 +185,10 @@ begin
     InstanciaControl := nil;
 
   if Assigned(ListaObserver) then
+  begin
+    ListaObserver.Clear; // remove referências sem tentar liberar
     FreeAndNil(ListaObserver);
+  end;
 
   if Assigned(ListaItems) then
     FreeAndNil(ListaItems);
@@ -357,8 +360,6 @@ begin
 end;
 
 procedure TPedidosController.PushRel(AIdPedido: string);
-var
-  Item: TItemPedidos;
 begin
   try
 
@@ -428,11 +429,12 @@ procedure TPedidosController.remList(AId, ASeq: string);
 var
   i: integer;
 begin
-  for i := 0 to Pred(ListaItems.Count) do
+  for i := Pred(ListaItems.Count) downto 0 do
   begin
     if (ListaItems[i].IdItem = AId) and (ListaItems[i].Sequencial = ASeq) then
     begin
       ListaItems.Delete(i);
+      break;
     end;
   end;
 

@@ -119,7 +119,7 @@ object FormItensPedidos: TFormItensPedidos
     Enabled = False
     TabOrder = 6
   end
-  object BitBtn1: TBitBtn
+  object btnPesquisa: TBitBtn
     Left = 449
     Top = 108
     Width = 33
@@ -201,5 +201,6 @@ object FormItensPedidos: TFormItensPedidos
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000}
     TabOrder = 2
+    OnClick = btnPesquisaClick
   end
 end

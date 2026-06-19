@@ -3,7 +3,7 @@ unit ItemController;
 interface
 
 uses
-  Controller, DM, System.SysUtils;
+  Controller, DM, System.SysUtils, System.StrUtils;
 
 type
   TItemController = class
@@ -29,7 +29,8 @@ var
 begin
   try
 
-    valorInt := StrToInt(StringReplace(AValor, ',', '', [rfReplaceAll]));
+    valorInt := StrToInt(ReplaceStr(StringReplace(AValor, ',', '',
+      [rfReplaceAll]), '.', ''));
 
     with Data.Query do
     begin
@@ -105,7 +106,8 @@ var
   valorInt: integer;
 begin
   try
-    valorInt := StrToInt(StringReplace(AValor, ',', '', [rfReplaceAll]));
+    valorInt := StrToInt(ReplaceStr(StringReplace(AValor, ',', '',
+      [rfReplaceAll]), '.', ''));
 
     with Data.Query do
     begin
