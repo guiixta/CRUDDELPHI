@@ -4,8 +4,8 @@ object MainPainel: TMainPainel
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Menu In'#237'cial'
-  ClientHeight = 416
-  ClientWidth = 654
+  ClientHeight = 464
+  ClientWidth = 626
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,8 +20,8 @@ object MainPainel: TMainPainel
   object Image1: TImage
     Left = 0
     Top = 0
-    Width = 654
-    Height = 416
+    Width = 626
+    Height = 464
     Align = alClient
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D494844520000023B0000

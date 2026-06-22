@@ -76,9 +76,9 @@ begin
   begin
     with AGrid do
     begin
-      Columns[4].Title.Caption := 'DATA NASCIMENTO';
-      Columns[5].Title.Caption := 'ESTADO CIVIL';
-      Columns[6].Title.Caption := 'ENDEREçO';
+      Columns[4].Title.Caption := 'Data Nascimento';
+      Columns[5].Title.Caption := 'Estado Civil';
+      Columns[6].Title.Caption := 'Endereço';
     end;
   end
   else if nome = 'ItemSDataSet' then
