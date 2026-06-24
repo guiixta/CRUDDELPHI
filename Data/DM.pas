@@ -77,14 +77,14 @@ begin
     Query.SQLConnection := ConnSQL;
 
     UserSDataSet.DataSet.CommandText :=
-      'SELECT ID, NOME, CPF, TELEFONE, DATA_NASCIMENTO, ESTADO_CIVIL, ENDERECO FROM USUARIOS ORDER BY ID ASC';
+      'SELECT ID, NOME, CPF, TELEFONE, DATA_NASCIMENTO, ESTADO_CIVIL, ENDERECO FROM USUARIOS ORDER BY ID ASC;';
 
     UsuarioSource.DataSet := UserSDataSet;
 
     UserSDataSet.FetchOnDemand := true;
     UserSDataSet.Open;
 
-    ItemSDataSet.DataSet.CommandText := 'SELECT * FROM ITENS ORDER BY ID ASC';
+    ItemSDataSet.DataSet.CommandText := 'SELECT * FROM ITENS ORDER BY ID ASC;';
     ItemSource.DataSet := ItemSDataSet;
 
     ItemSDataSet.FetchOnDemand := true;
@@ -95,7 +95,7 @@ begin
       Format('SELECT p.ID, u.NOME, p.VALOR, p.DATETIME, p.ID_USUARIO, ' +
       ' (SELECT COUNT(*) FROM PEDIDOS_ITENS pi WHERE pi.ID_PEDIDO = p.ID) AS QUANTIDADE '
       + ' FROM PEDIDOS p ' + ' INNER JOIN USUARIOS u ON u.ID = p.ID_USUARIO ' +
-      ' ORDER BY p.ID ASC', []);
+      ' ORDER BY p.ID ASC;', []);
 
     PedidosSource.DataSet := PedidoSDataSet;
 

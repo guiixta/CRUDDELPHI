@@ -69,14 +69,14 @@ object Data: TData
     DataSet.MaxBlobSize = -1
     DataSet.Params = <>
     Params = <>
-    Left = 274
+    Left = 258
     Top = 113
   end
   object PedidosItemLocal: TClientDataSet
     Aggregates = <>
     Params = <>
-    Left = 272
-    Top = 288
+    Left = 304
+    Top = 312
   end
   object PesquisaSource: TDataSource
     Left = 347

@@ -59,7 +59,6 @@ begin
   try
     NomeColuna := Column.FieldName;
 
-
     for i := 0 to Pred(Self.Columns.Count) do
     begin
       NomeVisuais.Add(Self.Columns[i].Title.Caption);
@@ -70,8 +69,6 @@ begin
 
       GSimpleData := TSimpleDataSet(Self.DataSource.DataSet);
 
-      GSimpleData.Active := false;
-
       OldSql := GSimpleData.DataSet.CommandText;
 
       if order = 'ASC' then
@@ -79,12 +76,35 @@ begin
       else
         order := 'ASC';
 
-      NovaOrdenacao := '$1 ' + NomeColuna + ' ' + order;
+      if (GetKeyState(VK_CONTROL) and $8000) <> 0 then
+      begin
+        { Se existir o filtro, trocar ordem }
+        if TRegEx.IsMatch(OldSql, '\b' + NomeColuna + '\b\s+(?:ASC|DESC)',
+          [roIgnoreCase]) then
+        begin
+          Command := TRegEx.Replace(OldSql, '\b(' + NomeColuna +
+            ')\b\s+(?:ASC|DESC)', '$1 ' + order, [roIgnoreCase]);
+        end
+        else
+        begin
+          Command := StringReplace(OldSql, ';', '',
+            [rfReplaceAll, rfIgnoreCase]);
+          Command := Command + ', ' + NomeColuna + ' ' + order + ';';
+        end;
 
-      Command := TRegEx.Replace(OldSql,
-        '(\bORDER\s+BY\s+)[a-zA-Z0-9_\.]+(\s+(?:ASC|DESC)\b)?', NovaOrdenacao,
-        [roIgnoreCase]);
+      end
+      else
+      begin
 
+        NovaOrdenacao := '$1 ' + NomeColuna + ' ' + order + ';';
+
+        Command := TRegEx.Replace(OldSql,
+          '(\bORDER\s+BY\s+)[a-zA-Z0-9_\.,\s]+;$', NovaOrdenacao,
+          [roIgnoreCase]);
+
+      end;
+
+      GSimpleData.Active := false;
       GSimpleData.DataSet.CommandText := Command;
       GSimpleData.Active := true;
 
@@ -93,8 +113,6 @@ begin
         Self.Columns[NomeVisuais.IndexOf(CNomeVisual)].Title.Caption :=
           CNomeVisual;
       end;
-
-
 
     end;
   finally
@@ -132,6 +150,7 @@ begin
   for i := 0 to Pred(Self.Columns.Count) do
   begin
     Self.Columns[i].Title.Alignment := taCenter;
+
     if (Self.Columns[i].Title.Caption <> '') and
       (CharInSet(Self.Columns[i].Title.Caption[1], ['A' .. 'Z'])) then
     begin

@@ -48,7 +48,7 @@ begin
   if valor.IsEmpty then
     raise Exception.Create('Valor não pode ser nulo');
 
-  Result := Format('WHERE %s LIKE %s', [SCampo, QuotedStr('%' + valor + '%')]);;
+  Result := Format('WHERE %s CONTAINING %s', [SCampo, QuotedStr(valor)]);;
 
 end;
 

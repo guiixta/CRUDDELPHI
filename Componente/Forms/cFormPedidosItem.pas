@@ -84,12 +84,13 @@ begin
 
   EIdItem.Text := '';
   ENome.Text := '';
-  EQuant.Text := '';
   EValorTotal.Text := '';
   ESeq.Text := IntToStr(StrToInt(ESeq.Text) + 1);
 
   if EIdItem.CanFocus then
     EIdItem.SetFocus;
+
+  EQuant.Text := '';
 
   adicionando := false;
 end;

@@ -133,6 +133,15 @@ begin
   if executando then
     exit;
 
+  if not ItensPedidosForm.DataSet.Active then
+    raise Exception.Create('Pedido não pode ficar sem itens!');
+
+  if not ItensPedidosForm.DataSet.RecordCount > 0 then
+    raise Exception.Create('Pedido não pode ficar sem itens!');
+
+  if ItensPedidosForm.DataSet.FieldByName('SEQUENCIAL').AsInteger = 0 then
+    raise Exception.Create('Pedido não pode ficar sem itens!');
+
   executando := true;
 
   if FAction = 'Incluir' then
@@ -144,13 +153,6 @@ begin
       if EUser.CanFocus then
         EUser.SetFocus;
     end;
-
-    if not ItensPedidosForm.DataSet.Active then
-      raise Exception.Create('Pedido não pode ficar sem itens!');
-    
-
-    if not ItensPedidosForm.DataSet.RecordCount > 0 then
-      raise Exception.Create('Precisa de itens para cadastra pedido!');
 
     PController.Incluir(EId.Text, LValorTotal.Caption, EUser.Text);
 
@@ -171,9 +173,6 @@ begin
 
   if FAction = 'Alterar' then
   begin
-
-    if not ItensPedidosForm.DataSet.RecordCount > 0 then
-      raise Exception.Create('Pedido não pode ficar sem itens!');
 
     PController.Alterar(EId.Text, LValorTotal.Caption);
 
@@ -236,8 +235,8 @@ begin
     if MessageDlg('Tem certeza? Essa ação não pode ser desfeita',
       mtConfirmation, [mbYes, mbNo], 0) = mrYes then
     begin
-      PController.remList(ItensPedidosForm.DataSet.FieldByName('ID_ITEM')
-        .AsString, ItensPedidosForm.DataSet.FieldByName('SEQUENCIAL').AsString);
+      PController.remList(IntToStr(ItensPedidosForm.DataSet.RecNo),
+        ItensPedidosForm.DataSet.FieldByName('SEQUENCIAL').AsString);
       ItensPedidosForm.DataSet.Delete;
     end;
 

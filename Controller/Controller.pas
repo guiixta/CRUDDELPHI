@@ -166,7 +166,7 @@ begin
     begin
       Close;
       DataSet.CommandText :=
-        Format('SELECT ID, NOME, CPF, TELEFONE, DATA_NASCIMENTO, ESTADO_CIVIL, ENDERECO FROM USUARIOS %s',
+        Format('SELECT ID, NOME, CPF, TELEFONE, DATA_NASCIMENTO, ESTADO_CIVIL, ENDERECO FROM USUARIOS %s;',
         [AFiltro]);
       Open;
     end;
@@ -179,7 +179,7 @@ begin
     with DataControl.ItemSDataSet do
     begin
       Close;
-      DataSet.CommandText := Format('SELECT * FROM ITENS %s', [AFiltro]);
+      DataSet.CommandText := Format('SELECT * FROM ITENS %s;', [AFiltro]);
       Open;
     end;
 
@@ -200,7 +200,7 @@ begin
     end;
 
     filtroControl :=
-      Format('SELECT p.ID, u.NOME, p.VALOR, p.DATETIME, p.ID_USUARIO, (SELECT COUNT(*) FROM PEDIDOS_ITENS pi WHERE pi.ID_PEDIDO = p.ID) AS QUANTIDADE FROM PEDIDOS p INNER JOIN USUARIOS u ON u.ID = p.ID_USUARIO %s',
+      Format('SELECT p.ID, u.NOME, p.VALOR, p.DATETIME, p.ID_USUARIO, (SELECT COUNT(*) FROM PEDIDOS_ITENS pi WHERE pi.ID_PEDIDO = p.ID) AS QUANTIDADE FROM PEDIDOS p INNER JOIN USUARIOS u ON u.ID = p.ID_USUARIO %s;',
       [filtroControl]);
 
     with DataControl.PedidoSDataSet do
@@ -429,7 +429,7 @@ begin
     begin
       Close;
       DataSet.CommandText :=
-        'SELECT ID, NOME, CPF, TELEFONE, DATA_NASCIMENTO, ESTADO_CIVIL, ENDERECO FROM USUARIOS ORDER BY ID ASC';
+        'SELECT ID, NOME, CPF, TELEFONE, DATA_NASCIMENTO, ESTADO_CIVIL, ENDERECO FROM USUARIOS ORDER BY ID ASC;';
       Open;
     end;
 
@@ -440,7 +440,7 @@ begin
     with DataControl.ItemSDataSet do
     begin
       Close;
-      DataSet.CommandText := 'SELECT * FROM ITENS ORDER BY ID ASC';
+      DataSet.CommandText := 'SELECT * FROM ITENS ORDER BY ID ASC;';
       Open;
     end;
 
@@ -455,7 +455,7 @@ begin
         Format('SELECT p.ID, u.NOME, p.VALOR, p.DATETIME, p.ID_USUARIO, ' +
         ' (SELECT COUNT(*) FROM PEDIDOS_ITENS pi WHERE pi.ID_PEDIDO = p.ID) AS QUANTIDADE '
         + ' FROM PEDIDOS p ' + ' INNER JOIN USUARIOS u ON u.ID = p.ID_USUARIO '
-        + ' ORDER BY p.ID ASC', []);
+        + ' ORDER BY p.ID ASC;', []);
       Open;
     end;
   end;
@@ -489,13 +489,13 @@ begin
   if LowerCase(ALocal) = 'usuarios' then
   begin
     pesquisa :=
-      Format('SELECT ID, NOME, CPF, TELEFONE, DATA_NASCIMENTO, ESTADO_CIVIL, ENDERECO FROM USUARIOS %s ORDER BY %s ASC',
+      Format('SELECT ID, NOME, CPF, TELEFONE, DATA_NASCIMENTO, ESTADO_CIVIL, ENDERECO FROM USUARIOS %s ORDER BY %s ASC;',
       [AValor, ACampo]);
   end;
 
   if LowerCase(ALocal) = 'itens' then
   begin
-    pesquisa := Format('SELECT * FROM ITENS %s ORDER BY %s ASC',
+    pesquisa := Format('SELECT * FROM ITENS %s ORDER BY %s ASC;',
       [AValor, ACampo]);
   end;
 

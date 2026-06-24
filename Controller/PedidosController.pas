@@ -155,8 +155,30 @@ begin
 end;
 
 procedure TPedidosController.DeleteRel(AId, ASequencial: string);
+var
+  Item: TItemPedidos;
+  I: integer;
+  local: boolean;
 begin
   try
+    local := false;
+    for I := Pred(ListaItems.Count) downto 0 do
+    begin
+      if ListaItems[i].Sequencial = ASequencial then
+      begin
+        ListaItems.Delete(i);
+        local := true;
+        Break;
+      end;
+    end;
+
+
+    if local then
+    begin
+      DataControl.PedidosItemLocal.Delete;
+      exit;
+    end;
+
 
     with DataControl.Query do
     begin
@@ -429,6 +451,7 @@ procedure TPedidosController.remList(AId, ASeq: string);
 var
   i: integer;
 begin
+
   for i := Pred(ListaItems.Count) downto 0 do
   begin
     if (ListaItems[i].IdItem = AId) and (ListaItems[i].Sequencial = ASeq) then

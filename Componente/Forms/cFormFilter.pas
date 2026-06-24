@@ -74,8 +74,6 @@ begin
 
   filtroFinal := Format('%s %s', [filtroFrame, filtroCombo]);
 
-
-
   Controller.Filtrar(cmbCampos.Items[cmbCampos.ItemIndex], filtroFinal);
 
   Controller.switchIsFilter;
