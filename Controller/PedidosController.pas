@@ -156,7 +156,6 @@ end;
 
 procedure TPedidosController.DeleteRel(AId, ASequencial: string);
 var
-  Item: TItemPedidos;
   I: integer;
   local: boolean;
 begin
