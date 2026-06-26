@@ -41,16 +41,18 @@ var
 procedure TFPTable.btnPesquisaClick(Sender: TObject);
 begin
 
-  TController.GetInstancia.SearchShow(tableCurrent);
+  TController.GetInstancia.SearchShow(tableCurrent,
+    procedure
+    begin
+      if not Data.IndirectConsult.Active then
+        exit;
 
-  if not Data.IndirectConsult.Active then
-    exit;
+      if not Data.IndirectConsult.RecordCount > 0 then
+        exit;
 
-  if not Data.IndirectConsult.RecordCount > 0 then
-    exit;
-
-  EId.Text := Data.IndirectConsult.FieldByName(LID.Caption).AsString;
-  EView.Text := Data.IndirectConsult.FieldByName(LView.Caption).AsString;
+      EId.Text := Data.IndirectConsult.FieldByName(LID.Caption).AsString;
+      EView.Text := Data.IndirectConsult.FieldByName(LView.Caption).AsString;
+    end);
 
 end;
 

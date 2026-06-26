@@ -39,7 +39,7 @@ procedure TMainPainel.Items1Click(Sender: TObject);
 var
   Painel: TPainelGeneric;
 begin
-  Painel := TPainelGeneric.Create(self, 'item');
+  Painel := TPainelGeneric.Create(self, 'itens');
   Painel.MostrarPainel('Itens');
 end;
 
@@ -47,7 +47,7 @@ procedure TMainPainel.Pedidos1Click(Sender: TObject);
 var
   Painel: TPainelGeneric;
 begin
-  Painel := TPainelGeneric.Create(self, 'pedido');
+  Painel := TPainelGeneric.Create(self, 'pedidos');
   Painel.MostrarPainel('Pedidos');
 end;
 
@@ -55,7 +55,7 @@ procedure TMainPainel.Usuarios1Click(Sender: TObject);
 var
   Painel: TPainelGeneric;
 begin
-  Painel := TPainelGeneric.Create(self, 'usuario');
+  Painel := TPainelGeneric.Create(self, 'usuarios');
   Painel.MostrarPainel('Usuário');
 end;
 

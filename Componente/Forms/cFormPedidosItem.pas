@@ -32,6 +32,7 @@ type
     procedure btnCloseClick(Sender: TObject);
     procedure EQuantExit(Sender: TObject);
     procedure btnPesquisaClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
 
   private
     { Private declarations }
@@ -102,19 +103,21 @@ end;
 
 procedure TFormItensPedidos.btnPesquisaClick(Sender: TObject);
 begin
-  TController.GetInstancia.SearchShow('itens');
+  TController.GetInstancia.SearchShow('itens',
+    procedure
+    begin
+      if not IndirectForm.Active then
+        exit;
 
-  if not IndirectForm.Active then
-    exit;
+      if not IndirectForm.RecordCount > 0 then
+        exit;
 
-  if not IndirectForm.RecordCount > 0 then
-    exit;
+      EIdItem.Text := IndirectForm.FieldByName('ID').AsString;
+      ENome.Text := IndirectForm.FieldByName('NOME').AsString;
 
-  EIdItem.Text := IndirectForm.FieldByName('ID').AsString;
-  ENome.Text := IndirectForm.FieldByName('NOME').AsString;
-
-  if EQuant.CanFocus then
-    EQuant.SetFocus;
+      if EQuant.CanFocus then
+        EQuant.SetFocus;
+    end);
 
 end;
 
@@ -167,6 +170,12 @@ begin
 
 end;
 
+procedure TFormItensPedidos.FormClose(Sender: TObject;
+var Action: TCloseAction);
+begin
+  Action := caFree;
+end;
+
 procedure TFormItensPedidos.MostrarForm(ISeq, IdPedido: string);
 begin
   EIdItem.TipoKey := tcNumeros;
@@ -177,11 +186,9 @@ begin
   PIController := TPedidosController.GetInstancia;
   IndirectForm := PIController.getUser('1');
 
+  Self.Show;
+
   Self.ActiveControl := EIdItem;
-
-  Self.ShowModal;
-
-  Self.ActiveControl := nil;
 
 end;
 

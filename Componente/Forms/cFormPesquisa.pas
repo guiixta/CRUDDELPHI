@@ -7,7 +7,8 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids,
   Vcl.DBGrids, Vcl.ExtCtrls, cDGridGeneric, uInterfaces,
-  System.Generics.Collections, Controller;
+  System.Generics.Collections, Controller, DM,
+  uTFPBase;
 
 type
 
@@ -26,6 +27,7 @@ type
     procedure btnCloseClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure GridPesquisaDblClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
   var
@@ -33,13 +35,16 @@ type
     Controller: TController;
     OptionsSelect: TStringList;
     Busca: string;
+    DataControl: TData;
+    ACampos: TDictionary<string, TTypeFilters>;
+    AAClose: TProc;
 
     procedure LimparPanel;
   public
     { Public declarations }
 
     procedure MostarForm(ALocal: string;
-      Campos: TDictionary<string, TTypeFilters>);
+      Campos: TDictionary<string, TTypeFilters>; AClose: TProc);
 
     procedure FiltrarGrid(Sender: TObject);
 
@@ -54,11 +59,7 @@ implementation
 { TFormPesquisa }
 
 uses
-  PEspecifico, PRange, PSelect, PValue, cEditGeneric, cEditMaskGeneric, DM,
-  uTFPBase;
-
-var
-  DataControl: TData;
+  PEspecifico, PRange, PSelect, PValue, cEditGeneric, cEditMaskGeneric;
 
 procedure TFormPesquisa.btnActionClick(Sender: TObject);
 begin
@@ -158,15 +159,15 @@ var
 begin
 
   if Frame is TFPEspecifico then
-      Filtro := TFPEspecifico(Frame).getConsulta
-    else if Frame is TFPRange then
-      Filtro := TFPRange(Frame).getConsulta
-    else if Frame is TFPSelect then
-      Filtro := TFPSelect(Frame).getConsulta
-    else if Frame is TFPValue then
-      Filtro := TFPValue(Frame).getConsulta
-    else
-      exit;
+    Filtro := TFPEspecifico(Frame).getConsulta
+  else if Frame is TFPRange then
+    Filtro := TFPRange(Frame).getConsulta
+  else if Frame is TFPSelect then
+    Filtro := TFPSelect(Frame).getConsulta
+  else if Frame is TFPValue then
+    Filtro := TFPValue(Frame).getConsulta
+  else
+    exit;
 
   Controller.Pesquisar(Busca, cmbCampos.Items[cmbCampos.ItemIndex], Filtro);
 
@@ -180,7 +181,20 @@ begin
   if Assigned(OptionsSelect) then
     FreeAndNil(OptionsSelect);
 
-    FreeAndNil(Frame);
+  FreeAndNil(Frame);
+
+  if Assigned(ACampos) then
+    FreeAndNil(ACampos);
+
+  if Assigned(AAClose) then
+    AAClose();
+
+  Action := caFree;
+end;
+
+procedure TFormPesquisa.FormDestroy(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TFormPesquisa.GridPesquisaDblClick(Sender: TObject);
@@ -203,12 +217,15 @@ begin
 end;
 
 procedure TFormPesquisa.MostarForm(ALocal: string;
-  Campos: TDictionary<string, TTypeFilters>);
+  Campos: TDictionary<string, TTypeFilters>; AClose: TProc);
 var
   campo: string;
 begin
   Busca := ALocal;
-  Self.Caption := Alocal[1] + LowerCase(Copy(ALocal, 2, MaxInt)) + ' - Pesquisa';
+  ACampos := Campos;
+  AAClose := AClose;
+  Self.Caption := ALocal[1] + LowerCase(Copy(ALocal, 2, MaxInt)) +
+    ' - Pesquisa';
 
   DataControl := DM.Data;
   GridPesquisa.DataSource := DataControl.PesquisaSource;
@@ -228,9 +245,7 @@ begin
     cmbCampos.OnChange(cmbCampos);
   end;
 
-  Self.ShowModal;
-
-  Campos.Free;
+  Self.Show;
 
 end;
 

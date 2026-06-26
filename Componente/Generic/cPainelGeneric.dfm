@@ -12,8 +12,11 @@ object PainelGeneric: TPainelGeneric
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  FormStyle = fsMDIChild
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poOwnerFormCenter
+  Visible = True
+  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
   object GridPanel: TPanel
@@ -119,8 +122,6 @@ object PainelGeneric: TPainelGeneric
         000000000000}
       TabOrder = 0
       OnClick = btnFilterClick
-      ExplicitLeft = 111
-      ExplicitTop = 0
     end
     object btnRemFilter: TBitBtn
       Left = 105
@@ -208,8 +209,6 @@ object PainelGeneric: TPainelGeneric
         000000000000}
       TabOrder = 1
       OnClick = btnRemFilterClick
-      ExplicitLeft = 178
-      ExplicitTop = 2
     end
   end
   object btnSair: TBitBtn

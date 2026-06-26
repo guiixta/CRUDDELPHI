@@ -29,12 +29,12 @@ type
 
     procedure FormShow(Action, NameForm: string);
 
-    procedure FilterShow;
-    procedure SearchShow(ALocal: string);
+    procedure FilterShow(Table: string; AClose: TProc);
+    procedure SearchShow(ALocal: string; AClose: TProc);
 
     procedure ChangeTableCurrent(ALocal: string);
 
-    procedure Filtrar(ACampo, AFiltro: string);
+    procedure Filtrar(ACampo, AFiltro, ATable: string);
 
     procedure initGrid(ATipo: string);
     procedure switchIsFilter;
@@ -128,38 +128,35 @@ begin
   inherited Destroy;
 end;
 
-procedure TController.FilterShow;
+procedure TController.FilterShow(Table: string; AClose: Tproc);
 var
   Campos: TDictionary<string, TTypeFilters>;
   Filtro: TFormFilter;
 begin
   Campos := nil;
-  Filtro := nil;
   try
 
-    Campos := getCampos(TabelaCurrent);
+    Campos := getCampos(Table);
 
     if not Campos.Count > 0 then
       raise Exception.Create('Falha ao obter campos');
 
-    Filtro := TFormFilter.Create(nil);
-    Filtro.MostarForm(Campos);
+    Filtro := TFormFilter.Create(Application);
+    Filtro.MostarForm(Campos, AClose, Table);
 
   finally
-    if Assigned(Filtro) then
-      Filtro.Free;
-
     Campos.Free;
+
   end;
 
 end;
 
-procedure TController.Filtrar(ACampo, AFiltro: string);
+procedure TController.Filtrar(ACampo, AFiltro, ATable: string);
 var
   filtroControl: string;
 begin
 
-  if LowerCase(TabelaCurrent) = 'usuarios' then
+  if LowerCase(ATable) = 'usuarios' then
   begin
 
     with DataControl.UserSDataSet do
@@ -173,7 +170,7 @@ begin
 
   end;
 
-  if LowerCase(TabelaCurrent) = 'itens' then
+  if LowerCase(ATable) = 'itens' then
   begin
 
     with DataControl.ItemSDataSet do
@@ -185,7 +182,7 @@ begin
 
   end;
 
-  if LowerCase(TabelaCurrent) = 'pedidos' then
+  if LowerCase(ATable) = 'pedidos' then
   begin
     filtroControl := TRegEx.Replace(AFiltro, 'DATA', 'DATETIME');
     filtroControl := TRegEx.Replace(filtroControl, 'QUANTIDADE',
@@ -221,47 +218,35 @@ var
   FrmControl: TForm;
 begin
 
-  if NameForm = 'usuario' then
+  if NameForm = 'usuarios' then
   begin
-    FrmControl := TFormUsuario.Create(nil);
-    try
-      TFormUsuario(FrmControl).MostrarForm(Action, DataControl.UsuarioSource);
-    finally
-      FrmControl.Free;
-    end;
+    FrmControl := TFormUsuario.Create(Application);
+    TFormUsuario(FrmControl).MostrarForm(Action, DataControl.UsuarioSource);
+  end;
+
+  if NameForm = 'itens' then
+  begin
+    FrmControl := TFormItem.Create(Application);
+    TFormItem(FrmControl).MostrarForm(Action, DataControl.ItemSource);
 
   end;
 
-  if NameForm = 'item' then
+  if NameForm = 'pedidos' then
   begin
-    FrmControl := TFormItem.Create(nil);
-    try
-      TFormItem(FrmControl).MostrarForm(Action, DataControl.ItemSource);
-    finally
-      FrmControl.Free;
-    end;
+    FrmControl := TFormPedidos.Create(Application);
 
+    TFormPedidos(FrmControl).MostrarForm(Action, DataControl.PedidosSource,
+      DataControl.PedidosItems);
   end;
-
-  if NameForm = 'pedido' then
-  begin
-    FrmControl := TFormPedidos.Create(nil);
-    try
-      TFormPedidos(FrmControl).MostrarForm(Action, DataControl.PedidosSource,
-        DataControl.PedidosItems);
-    finally
-      FrmControl.Free;
-    end;
-  end;
-
 end;
+
 
 function TController.FrameGen(Frame: TFrameBaseClass; Tipo: string): TFrameBase;
 begin
 
   Result := nil;
 
-  if Tipo = 'usuario' then
+  if Tipo = 'usuarios' then
   begin
     Result := Frame.Create(nil);
     Result.Iniciar(DataControl.UsuarioSource);
@@ -270,7 +255,7 @@ begin
 
   end;
 
-  if Tipo = 'item' then
+  if Tipo = 'itens' then
   begin
     Result := Frame.Create(nil);
     Result.Iniciar(DataControl.ItemSource);
@@ -279,7 +264,7 @@ begin
 
   end;
 
-  if Tipo = 'pedido' then
+  if Tipo = 'pedidos' then
   begin
     Result := Frame.Create(nil);
     Result.Iniciar(DataControl.PedidosSource);
@@ -311,7 +296,7 @@ begin
 
   end;
 
-  if ALocal = 'itens' then
+  if LowerCase(ALocal) = 'itens' then
   begin
     Result.Add('ID', tfEspecifico);
     Result.Add('NOME', tfEspecifico);
@@ -319,7 +304,7 @@ begin
     Result.Add('DESCRICAO', tfEspecifico);
   end;
 
-  if ALocal = 'pedidos' then
+  if LowerCase(ALocal) = 'pedidos' then
   begin
     Result.Add('ID', tfEspecifico);
     Result.Add('USUARIOS', tfTable);
@@ -423,7 +408,7 @@ end;
 
 procedure TController.initGrid(ATipo: string);
 begin
-  if LowerCase(ATipo) = 'usuario' then
+  if LowerCase(ATipo) = 'usuarios' then
   begin
     with DataControl.UserSDataSet do
     begin
@@ -435,7 +420,7 @@ begin
 
   end;
 
-  if LowerCase(ATipo) = 'item' then
+  if LowerCase(ATipo) = 'itens' then
   begin
     with DataControl.ItemSDataSet do
     begin
@@ -446,7 +431,7 @@ begin
 
   end;
 
-  if LowerCase(ATipo) = 'pedido' then
+  if LowerCase(ATipo) = 'pedidos' then
   begin
     with DataControl.PedidoSDataSet do
     begin
@@ -520,10 +505,13 @@ begin
   ListaObserver.Remove(IObserver)
 end;
 
-procedure TController.SearchShow(ALocal: string);
+procedure TController.SearchShow(ALocal: string; AClose: TProc);
+var
+  Form: TFormPesquisa;
 begin
 
-  FormPesquisa.MostarForm(ALocal, getCampos(ALocal));
+  Form := TFormPesquisa.Create(Application);
+  Form.MostarForm(ALocal, getCampos(ALocal), AClose);
 
 end;
 

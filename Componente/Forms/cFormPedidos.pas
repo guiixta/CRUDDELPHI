@@ -47,6 +47,7 @@ type
     procedure btnActionClick(Sender: TObject);
     procedure EIdExit(Sender: TObject);
     procedure btnPesquisaClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   var
@@ -115,16 +116,18 @@ end;
 procedure TFormPedidos.btnPesquisaClick(Sender: TObject);
 begin
 
-  TController.GetInstancia.SearchShow('usuarios');
+  TController.GetInstancia.SearchShow('usuarios',
+    procedure
+    begin
+      if not IndirectForm.Active then
+        exit;
 
-  if not IndirectForm.Active then
-    exit;
+      if not IndirectForm.RecordCount > 0 then
+        exit;
 
-  if not IndirectForm.RecordCount > 0 then
-    exit;
-
-  EUser.Text := IndirectForm.FieldByName('ID').AsString;
-  ENomeUser.Text := IndirectForm.FieldByName('NOME').AsString;
+      EUser.Text := IndirectForm.FieldByName('ID').AsString;
+      ENomeUser.Text := IndirectForm.FieldByName('NOME').AsString;
+    end);
 
 end;
 
@@ -220,7 +223,7 @@ begin
     end;
   end;
 
-  Self.Close;
+  Close;
 end;
 
 procedure TFormPedidos.btnDelClick(Sender: TObject);
@@ -273,6 +276,7 @@ end;
 procedure TFormPedidos.btnIncClick(Sender: TObject);
 var
   proxSeq: string;
+  Form: TFormItensPedidos;
 begin
 
   if ItensPedidosForm.DataSet.Active and (not ItensPedidosForm.DataSet.IsEmpty)
@@ -285,7 +289,8 @@ begin
   else
     proxSeq := '1';
 
-  FormItensPedidos.MostrarForm(proxSeq, EId.Text);
+  Form := TFormItensPedidos.Create(Application);
+  Form.MostrarForm(proxSeq, EId.Text);
 
 end;
 
@@ -390,8 +395,13 @@ begin
 
 end;
 
+procedure TFormPedidos.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caFree;
+end;
+
 procedure TFormPedidos.MostrarForm(Action: string; Dados: TDataSource;
-  ItemPedidos: TDataSource);
+ItemPedidos: TDataSource);
 begin
 
   FAction := Action;
@@ -415,6 +425,7 @@ begin
     EId.Text := IntToStr(DadosForm.DataSet.FieldByName('ID').AsInteger + 1);
 
     Self.ActiveControl := EUser;
+    EUser.DoEnter;
     btnPesquisa.Enabled := true;
 
   end;
@@ -426,6 +437,7 @@ begin
     EId.Text := DadosForm.DataSet.FieldByName('ID').AsString;
 
     Self.ActiveControl := EId;
+    EId.DoEnter;
 
     EUser.Enabled := false;
     btnPesquisa.Enabled := false;
@@ -439,15 +451,14 @@ begin
     EId.Text := DadosForm.DataSet.FieldByName('ID').AsString;
 
     Self.ActiveControl := EId;
+    EId.DoEnter;
 
     EUser.Enabled := false;
   end;
 
   PController.LimparLocal;
 
-  Self.ShowModal;
-
-  Self.ActiveControl := nil;
+  Self.Show;
 
 end;
 

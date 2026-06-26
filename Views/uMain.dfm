@@ -4,14 +4,15 @@ object MainPainel: TMainPainel
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Menu In'#237'cial'
-  ClientHeight = 464
-  ClientWidth = 626
+  ClientHeight = 531
+  ClientWidth = 792
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  FormStyle = fsMDIForm
   Menu = MainMenu1
   OldCreateOrder = False
   Position = poScreenCenter
@@ -20,8 +21,8 @@ object MainPainel: TMainPainel
   object Image1: TImage
     Left = 0
     Top = 0
-    Width = 626
-    Height = 464
+    Width = 792
+    Height = 531
     Align = alClient
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D494844520000023B0000

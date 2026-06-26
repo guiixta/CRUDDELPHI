@@ -12,8 +12,11 @@ object FormItensPedidos: TFormItensPedidos
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  FormStyle = fsMDIChild
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poOwnerFormCenter
+  Visible = True
+  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
   object LSeq: TLabel
@@ -96,7 +99,7 @@ object FormItensPedidos: TFormItensPedidos
     OnExit = EIdItemExit
   end
   object ENome: TEdit
-    Left = 150
+    Left = 152
     Top = 113
     Width = 291
     Height = 21

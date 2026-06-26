@@ -28,6 +28,7 @@ type
     procedure EIdExit(Sender: TObject);
     procedure btnActionClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   var
@@ -133,7 +134,7 @@ end;
 
 procedure TFormItem.btnCloseClick(Sender: TObject);
 begin
-  Self.Close;
+  Close;
 end;
 
 constructor TFormItem.Create(AOwner: TComponent);
@@ -141,13 +142,6 @@ begin
   inherited Create(AOwner);
 
   IController := TItemController.Create;
-
-  ENome.TipoKey := tcLetras;
-  EValor.TipoMask := tmDinheiro;
-
-
-  DesabilitarGeral;
-
 end;
 
 procedure TFormItem.DesabilitarGeral;
@@ -179,6 +173,10 @@ end;
 
 procedure TFormItem.EIdEnter(Sender: TObject);
 begin
+  if FAction = '' then
+    exit;
+
+
   if FAction = 'Incluir' then
   begin
     DadosForm.DataSet.Last;
@@ -259,6 +257,11 @@ begin
 
 end;
 
+procedure TFormItem.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caFree;
+end;
+
 procedure TFormItem.HabilitarGeral;
 var
   EditControl: TComponent;
@@ -288,10 +291,14 @@ begin
   btnAction.Caption := '&' + Action;
 
   Self.ActiveControl := EId;
+  EId.DoEnter;
 
-  Self.ShowModal;
+  Self.Show;
 
-  Self.ActiveControl := nil;
+  ENome.TipoKey := tcLetras;
+  EValor.TipoMask := tmDinheiro;
+
+  DesabilitarGeral;
 
 end;
 

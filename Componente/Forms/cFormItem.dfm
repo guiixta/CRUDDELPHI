@@ -12,8 +12,11 @@ object FormItem: TFormItem
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  FormStyle = fsMDIChild
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poOwnerFormCenter
+  Visible = True
+  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
   object LID: TLabel
@@ -53,9 +56,6 @@ object FormItem: TFormItem
     Caption = 'Panel1'
     ShowCaption = False
     TabOrder = 4
-    ExplicitLeft = -10
-    ExplicitTop = 212
-    ExplicitWidth = 514
     object btnAction: TButton
       Left = 165
       Top = 8

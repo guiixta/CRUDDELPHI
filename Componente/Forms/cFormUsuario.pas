@@ -38,6 +38,7 @@ type
     procedure btnActionClick(Sender: TObject);
     procedure EEnderecoKeyPress(Sender: TObject; var Key: Char);
     procedure CEstadoKeyPress(Sender: TObject; var Key: Char);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
 
   private
     { Private declarations }
@@ -162,7 +163,7 @@ end;
 
 procedure TFormUsuario.btnCloseClick(Sender: TObject);
 begin
-  Self.ModalResult := mrCancel;
+  Close;
 end;
 
 procedure TFormUsuario.CEstadoKeyPress(Sender: TObject; var Key: Char);
@@ -175,15 +176,6 @@ constructor TFormUsuario.Create(AOwner: TComponent);
 
 begin
   inherited Create(AOwner);
-
-  CEstado.ItemIndex := 0;
-
-  { Iniciar com campos desabiltados }
-  DesabilitarGeral;
-
-  EData.SetTipoMascara(tmData);
-  ETelefone.SetTipoMascara(tmTelefone);
-  ENome.TipoKey := tcLetras;
 
   UController := TUserController.Create;
 
@@ -228,6 +220,10 @@ end;
 
 procedure TFormUsuario.EIdEnter(Sender: TObject);
 begin
+
+  if FAction = '' then
+    exit;
+
 
   if FAction = 'Incluir' then
   begin
@@ -313,6 +309,11 @@ begin
 
 end;
 
+procedure TFormUsuario.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caFree;
+end;
+
 procedure TFormUsuario.HabilitarGeral;
 var
   EditControl: TComponent;
@@ -344,10 +345,18 @@ begin
   btnAction.Caption := '&' + Action;
 
   Self.ActiveControl := EId;
+  EId.DoEnter;
 
-  Self.ShowModal;
+  Self.Show;
 
-  Self.ActiveControl := nil;
+  { Iniciar com campos adesabiltados }
+  DesabilitarGeral;
+
+  CEstado.ItemIndex := 0;
+
+  EData.SetTipoMascara(tmData);
+  ETelefone.SetTipoMascara(tmTelefone);
+  ENome.TipoKey := tcLetras;
 
 end;
 

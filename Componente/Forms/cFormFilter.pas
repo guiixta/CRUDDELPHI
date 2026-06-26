@@ -37,7 +37,8 @@ type
     procedure LimparPanel;
   public
     { Public declarations }
-    procedure MostarForm(Campos: TDictionary<string, TTypeFilters>);
+    procedure MostarForm(Campos: TDictionary<string, TTypeFilters>;
+      AClose: TProc; ATable: string);
   end;
 
 var
@@ -49,6 +50,10 @@ implementation
 
 uses
   PEspecifico, PRange, PSelect, PValue, PTable;
+
+var
+  AAClose: TProc;
+  AATable: string;
 
 procedure TFormFIlter.btnActionClick(Sender: TObject);
 var
@@ -74,7 +79,7 @@ begin
 
   filtroFinal := Format('%s %s', [filtroFrame, filtroCombo]);
 
-  Controller.Filtrar(cmbCampos.Items[cmbCampos.ItemIndex], filtroFinal);
+  Controller.Filtrar(cmbCampos.Items[cmbCampos.ItemIndex], filtroFinal, AATable);
 
   Controller.switchIsFilter;
 
@@ -180,6 +185,12 @@ begin
   if Assigned(Frame) then
     FreeAndNil(Frame);
 
+  if Assigned(AAClose) then
+    AAClose();
+
+
+  Action := caFree;
+
 end;
 
 procedure TFormFIlter.LimparPanel;
@@ -191,14 +202,16 @@ begin
     PFilter.Controls[I].Free;
   end;
 
-
 end;
 
-procedure TFormFIlter.MostarForm(Campos: TDictionary<string, TTypeFilters>);
+procedure TFormFIlter.MostarForm(Campos: TDictionary<string, TTypeFilters>;
+  AClose: TProc; ATable: string);
 var
   campo: string;
 begin
   Controller := TController.GetInstancia;
+  AAClose := AClose;
+  AATable := ATable;
   cmbCampos.Items.Clear;
   cmbOrder.Items.Clear;
 
@@ -225,7 +238,7 @@ begin
   cmbOrder.ItemIndex := 0;
   cmbDirect.ItemIndex := 0;
 
-  Self.ShowModal;
+  Self.Show;
 end;
 
 end.

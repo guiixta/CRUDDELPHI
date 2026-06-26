@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Controller, Vcl.ExtCtrls, fDBGrid, Vcl.StdCtrls, Vcl.Buttons, FrameCount,
-  uFrameBase;
+  uFrameBase, uInterfaces;
 
 type
   TPainelGeneric = class(TForm)
@@ -24,6 +24,7 @@ type
     procedure btnDelClick(Sender: TObject);
     procedure btnFilterClick(Sender: TObject);
     procedure btnRemFilterClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   var
@@ -58,11 +59,20 @@ end;
 
 procedure TPainelGeneric.btnFilterClick(Sender: TObject);
 begin
-  Controller.FilterShow;
-  if Controller.getIsFilter then
-    btnRemFilter.Visible := true
-  else
-    btnRemFilter.Visible := false;
+  Controller.FilterShow(Ctipo,
+    procedure
+    begin
+      if not Assigned(btnRemFilter) then
+        exit;
+
+
+      if Controller.getIsFilter then
+        btnRemFilter.Visible := true
+      else
+        btnRemFilter.Visible := false;
+
+    end);
+
 end;
 
 procedure TPainelGeneric.btnIncClick(Sender: TObject);
@@ -81,7 +91,7 @@ end;
 
 procedure TPainelGeneric.btnSairClick(Sender: TObject);
 begin
-  Self.Close;
+  Close;
 end;
 
 constructor TPainelGeneric.Create(AOwner: TComponent; tipo: string);
@@ -98,8 +108,6 @@ begin
   FrameDB := Controller.FrameGen(TFGrid, tipo);
   FrameCT := Controller.FrameGen(TFrameCT, tipo);
 
-  Controller.Notificar;
-
   if Assigned(FrameDB) then
   begin
     FrameDB.Parent := GridPanel;
@@ -113,6 +121,22 @@ begin
   end;
 end;
 
+procedure TPainelGeneric.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  Obs: IObservador;
+begin
+
+  if (GridPanel.ControlCount > 0) and
+    (Supports(GridPanel.Controls[0], IObservador, Obs)) then
+    Controller.RemObserver(Obs);
+
+  if (CountPanel.ControlCount > 0) and
+    (Supports(CountPanel.Controls[0], IObservador, Obs)) then
+    Controller.RemObserver(Obs);
+
+  Action := caFree;
+end;
+
 procedure TPainelGeneric.MostrarPainel(tipo: string);
 begin
 
@@ -120,7 +144,7 @@ begin
   Controller.initGrid(tipo);
   btnRemFilter.Visible := false;
   Controller.Notificar;
-  Self.ShowModal;
+  Self.Show;
   Self.Focused;
 
 end;

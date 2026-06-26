@@ -12,8 +12,10 @@ object FormFIlter: TFormFIlter
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  FormStyle = fsMDIChild
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poOwnerFormCenter
+  Visible = True
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13

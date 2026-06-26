@@ -1,4 +1,4 @@
-program Project1;
+program ControlShop;
 
 uses
   Vcl.Forms,
@@ -36,13 +36,7 @@ begin
   ReportMemoryLeaksOnShutdown := true;
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TMainPainel, MainPainel);
   Application.CreateForm(TData, Data);
-  Application.CreateForm(TPainelGeneric, PainelGeneric);
-  Application.CreateForm(TFormItem, FormItem);
-  Application.CreateForm(TFormPedidos, FormPedidos);
-  Application.CreateForm(TFormItensPedidos, FormItensPedidos);
-  Application.CreateForm(TFormFIlter, FormFIlter);
-  Application.CreateForm(TFormPesquisa, FormPesquisa);
+  Application.CreateForm(TMainPainel, MainPainel);
   Application.Run;
 end.
